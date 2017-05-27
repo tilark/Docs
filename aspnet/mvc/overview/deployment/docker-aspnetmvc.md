@@ -93,7 +93,7 @@ to the `docker build` command, which creates the image.
 
 You will build an image based on the `microsft/aspnet`
 image located on [Docker Hub](https://hub.docker.com/r/microsoft/aspnet/).
-The base image, `microsoft/aspnet`, is a Windows Server image. In contains
+The base image, `microsoft/aspnet`, is a Windows Server image. It contains
 Windows Server Core, IIS and ASP.NET 4.6.2. When you run this image in your container, it will
 automatically start IIS and installed websites.
 
@@ -106,7 +106,7 @@ The Dockerfile that creates your image looks like this:
 FROM microsoft/aspnet
 
 # The final instruction copies the site you published earlier into the container.
-COPY ./bin/Release/PublishOutput/ .
+COPY ./bin/Release/PublishOutput/ /inetpub/wwwroot
 ```
 
 There is no `ENTRYPOINT` command in this Dockerfile. You don't need one. When running Windows Server with IIS, the IIS process is the entrypoint, which is configured to start in the aspnet base image.

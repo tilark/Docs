@@ -35,7 +35,11 @@ Here's a diagram that illustrates the relationship between IIS, ANCM, and ASP.NE
 
 ![ASP.NET Core Module](aspnet-core-module/_static/ancm.png)
 
-Requests come in from the Web and hit the kernel mode Http.Sys driver which routes into IIS on the primary port (80) or SSL port (443). The request is then forwarded to the ASP.NET Core application on the HTTP port configured for the application, which is not port 80/443. Kestrel picks up the request and pushes it into the ASP.NET Core middleware pipeline which then handles the request and passes it on as an `HttpContext` instance to application logic. The application's response is then passed back to IIS, which pushes it back out to the HTTP client that initiated the request.
+Requests come in from the Web and hit the kernel mode Http.Sys driver which routes them into IIS on the primary port (80) or SSL port (443). ANCM forwards the requests to the ASP.NET Core application on the HTTP port configured for the application, which is not port 80/443.
+
+Kestrel listens for traffic coming from ANCM.  ANCM specifies the port via environment variable at startup, and the [UseIISIntegration](#call-useiisintegration) method configures the server to listen on `http://localhost:{port}`. There are additional checks to reject requests not from ANCM. (ANCM does not support HTTPS forwarding, so requests are forwarded over HTTP even if received by IIS over HTTPS.)
+
+Kestrel picks up requests from ANCM and pushes them into the ASP.NET Core middleware pipeline, which then handles them and passes them on as `HttpContext` instances to application logic. The application's responses are then passed back to IIS, which pushes them back out to the HTTP client that initiated the requests.
 
 ANCM has a few other functions as well:
 
@@ -49,7 +53,7 @@ This section provides an overview of the process for setting up an IIS server an
 
 ### Install ANCM
 
-The ASP.NET Core Module has to be installed in IIS on your servers and in IIS Express on your development machines. For servers, ANCM is included in the [ASP.NET Core Server Hosting Bundle](https://go.microsoft.com/fwlink/?linkid=837808). For development machines, Visual Studio automatically installs ANCM in IIS Express, and in IIS if it is already installed on the machine.
+The ASP.NET Core Module has to be installed in IIS on your servers and in IIS Express on your development machines. For servers, ANCM is included in the [ASP.NET Core Server Hosting Bundle](https://go.microsoft.com/fwlink/?linkid=844461). For development machines, Visual Studio automatically installs ANCM in IIS Express, and in IIS if it is already installed on the machine.
 
 ### Install the IISIntegration NuGet package
 

@@ -40,7 +40,7 @@ Edit the */Views/Movies/Index.cshtml* file and add a `Rating` field:
 
 [!code-HTML[Main](start-mvc/sample/MvcMovie/Views/Movies/IndexGenreRating.cshtml?highlight=17,39&range=24-64)]
 
-Update the */Views/Movies/Create.cshtml* with a `Rating` field. You can copy/paste the previous "form group" and let intelliSense help you update the fields. IntelliSense works with [Tag Helpers](xref:mvc/views/tag-helpers/intro).
+Update the */Views/Movies/Create.cshtml* with a `Rating` field. You can copy/paste the previous "form group" and let intelliSense help you update the fields. IntelliSense works with [Tag Helpers](xref:mvc/views/tag-helpers/intro). Note: In the RTM verison of Visual Studio 2017 you need to install the [Razor Language Services](https://marketplace.visualstudio.com/items?itemName=ms-madsk.RazorLanguageServices) for Razor intelliSense. This will be fixed in the next release.
 
 ![The developer has typed the letter R for the attribute value of asp-for in the second label element of the view. An Intellisense contextual menu has appeared showing the available fields, including Rating, which is highlighted in the list automatically. When the developer clicks the field or presses Enter on the keyboard, the value will be set to Rating.](new-field/_static/cr.png)
 
@@ -64,12 +64,17 @@ Update the `SeedData` class so that it provides a value for the new column. A sa
 
 [!code-csharp[Main](start-mvc/sample/MvcMovie/Models/SeedDataRating.cs?name=snippet1&highlight=6)]
 
-Build the solution then open a command prompt. Enter the following commands:
+Build the solution then open a command prompt in the project folder. Enter the following commands:
 
 ```console
 dotnet ef migrations add Rating
 dotnet ef database update
 ```
+Note: If you get the error message `No executable found matching command "dotnet-ef"`:
+
+- Verify you're in the project folder (which contains the *.csproj* file).
+- Verify the *.csproj* file contains the "Microsoft.EntityFrameworkCore.Tools.DotNet" NuGet package.
+- See [this blog post](http://thedatafarm.com/data-access/no-executable-found-matching-command-dotnet-ef/) for help troubleshooting.
 
 The `migrations add` command tells the migration framework to examine the current `Movie` model with the current `Movie` DB schema and create the necessary code to migrate the DB to the new model. The name "Rating" is arbitrary and is used to name the migration file. It's helpful to use a meaningful name for the migration step.
 
